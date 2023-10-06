@@ -47,13 +47,17 @@ export const getSumMap = (map: Record<string, number>): number => Object.values(
 
 export const getVarianza = (tuples: Tuple[], length: number): number => {
     const sum = tuples.reduce((acc, curr) => acc + curr['fi*(xi-media)^2'], 0)
-    return Math.round((sum / length) * 100000) / 100000;
+    return toDecimals((sum / length), 5);
+}
+
+export function getBaseLog(x: number, y: number) {
+    return Math.log(y) / Math.log(x);
 }
 
 export const getTipoCurtosis = (curtosis: number) => {
-    if (curtosis === 0) return 'MESOCURTICA';
-    if (curtosis > 0) return 'LEPTOCURTICA';
-    if (curtosis < 0) return 'PLATICURTICA';
+    if (curtosis === 0) return 'MESOCÚRTICA';
+    if (curtosis > 0) return 'LEPTOCÚRTICA';
+    return 'PLATICÚRTICA';
 }
 
 export const get360percentageValue = (map: Record<string, number>): Record<string, number> => {
@@ -61,4 +65,9 @@ export const get360percentageValue = (map: Record<string, number>): Record<strin
         acc[`${key}`] = (Number(value) * 360 / getSumMap(map));
         return acc;
     }, {})
+}
+
+export function toDecimals(num: number, decimals: number) {
+    const value = Number(1 + ''.padEnd(decimals, '0'));
+    return Math.round(num * value) / value;
 }

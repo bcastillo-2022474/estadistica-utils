@@ -21,15 +21,28 @@ export type State = {
     'rango-95%': [number, number],
     'rango-99%': [number, number],
     'tipo-sesgo': 'POSITIVO' | 'NEGATIVO',
-    'tipo-curtosis': 'LEPTOCURTICA' | 'MESOCURTICA' | 'PLATICURTICA',
+    'tipo-curtosis': 'LEPTOCÚRTICA' | 'MESOCÚRTICA' | 'PLATICÚRTICA',
 }
 
 export type Tuple = {
-    fr: number;
     fi: number,
     xi: number,
     'xi*fi': number,
     'xi-media': number,
     '(xi-media)^2': number,
     'fi*(xi-media)^2': number,
+    fg: number;
+    fr: number;
+    'fr%': number;
 }
+
+export type GroupedTuple = { limiteInferior: number, limiteSuperior: number, frecuenciaAbsoluta: number }
+
+export function isGroupedTupleArray(arr: any[]): arr is GroupedTuple[] {
+    if (arr.length === 0) return true;
+    const [data] = arr
+    if (Object.keys(data).length !== 3) return false;
+    return Object.keys(data).every(key => key === 'limiteInferior' || key === 'limiteSuperior' || key === 'frecuenciaAbsoluta')
+}
+
+

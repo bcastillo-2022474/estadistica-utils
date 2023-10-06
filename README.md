@@ -1,6 +1,4 @@
-¡Por supuesto! A continuación, se encuentra un README que explica la interfaz `State` y el código en general en español.
-
-# README del Código de Análisis Estadístico
+# README Estadística Utils CLI
 
 Este repositorio contiene código TypeScript para realizar análisis estadísticos en datos numéricos. El código incluye
 funciones para varios cálculos estadísticos y utiliza la interfaz `State` para representar el estado de los datos y sus
@@ -227,6 +225,52 @@ const medidasDeTendenciaCentral = {
         [media - (desviacionEstandar * 2), media + (desviacionEstandar * 2)],
     'rango-99%':
         [media - (desviacionEstandar * 3), media + (desviacionEstandar * 3)],
+}
+```
+
+### Datos Agrupados
+
+Cuando trabajamos con datos agrupados lo único que debemos hacer es encontrar los intervalos, límites inferiores y
+superiores, después de eso podemos sacar xi, teniendo xi, podemos trabajarlo como si de datos simples se tratara
+
+```typescript
+function getGroupedDataFromArray(data: number[]) {
+    const max = Math.max(...data);
+    const min = Math.min(...data);
+    const range = max - min;
+    const k = Math.round(3.3 * getBaseLog(10, data.length)) + 1;
+    const interval = Math.round(range / k);
+
+    const arr: GroupedTuple[] = [];
+    for (let i = 0; (i * interval) + (min) < max + interval; i += 1) {
+        const limiteInferior = (i * interval) + (min);
+        const limiteSuperior = ((i + 1) * interval) + (min - 1);
+        const frecuenciaAbsoluta = sumOfRange(limiteInferior, limiteSuperior, getMapFromArray(data));
+        arr.push({
+            limiteInferior,
+            limiteSuperior,
+            frecuenciaAbsoluta
+        })
+    }
+    return arr;
+}
+```
+
+```typescript
+function groupedTable(data: GroupedTuple[] | number[]) {
+    if (isGroupedTupleArray(data)) {
+        const map = (data).reduce((obj: Record<string, number>, {
+            limiteInferior,
+            limiteSuperior,
+            frecuenciaAbsoluta
+        }) => {
+            obj[`${(limiteInferior + limiteSuperior) / 2}`] = frecuenciaAbsoluta;
+            return obj;
+        }, {});
+        simpleTable(map);
+        return
+    }
+    groupedTable(getGroupedDataFromArray(data));
 }
 ```
 
