@@ -33,7 +33,7 @@ de cada propiedad en la interfaz `State`:
 - `rango-95%`: El intervalo de confianza del 95%.
 - `rango-99%`: El intervalo de confianza del 99%.
 - `tipo-sesgo`: El tipo de asimetría, ya sea "POSITIVO" o "NEGATIVO".
-- `tipo-curtosis`: El tipo de curtosis, ya sea "LEPTOCURTICA," "MESOCURTICA," o "PLATICURTICA."
+- `tipo-curtosis`: El tipo de curtosis, ya sea "LEPTOCÚRTICA," "MESOCÚRTICA," o "PLATICÚRTICA."
 
 ## Explicación del Código
 
@@ -61,44 +61,67 @@ La función `main` es el punto de entrada del script y muestra cómo se utilizan
 estadísticos en un conjunto de datos. Puede llamar a la función `main` con su propio conjunto de datos para calcular y
 mostrar diversas propiedades estadísticas.
 
-## Fórmulas Utilizadas
+## Formulas
 
 En este documento, se presentan una serie de fórmulas utilizadas en el código para realizar cálculos estadísticos. Estas
 fórmulas se aplican a conjuntos de datos numéricos y ayudan a comprender sus propiedades estadísticas.
 
+Aquí hay una lista de las fórmulas utilizadas en el código:
+
 ### Cálculo del número de datos (n)
 
-El número de datos en un conjunto se representa como "n" y se calcula utilizando la longitud del conjunto.
+Número de datos, length. El número de datos en un conjunto se representa como `n` y se calcula utilizando la longitud
+del conjunto.
 
 ```typescript
 const n = length;
-```
+``` 
 
 ### Cálculo de Cuartiles
 
 Los cuartiles dividen un conjunto de datos en cuatro partes iguales. Se pueden calcular utilizando la siguiente fórmula,
-donde "k" representa el cuartil que se desea calcular (1, 2, 3 o 4) y "n" es el número de datos.
+donde `k` representa el cuartil que se desea calcular (1, 2, 3 o 4) y `n` es el número de datos. `k*n/4`
 
 ```typescript
 const cuartil = (k: number, n: number) => (k * n) / 4;
 ```
 
+```typescript
+const quartiles = {
+    Q1: sortedData[Math.round((length * 1) / 4) - 1],
+    Q2: sortedData[Math.round((length * 2) / 4) - 1],
+    Q3: sortedData[Math.round((length * 3) / 4) - 1],
+    Q4: sortedData[Math.round((length * 4) / 4) - 1]
+};
+```
+
 ### Cálculo de Percentiles
 
 Los percentiles representan la posición relativa de un valor en un conjunto de datos. Se pueden calcular de manera
-similar a los cuartiles, donde "k" representa el percentil que se desea calcular (10, 90) y "n" es el número de datos.
+similar a los cuartiles, donde `k` representa el percentil que se desea calcular (por lo general 10 y 90) y `n` es el
+número de datos.
+`k*n/100`
 
 ```typescript
 const percentil = (k: number, n: number) => (k * n) / 100;
+```
+
+```typescript
+const percentiles = {
+    P10: sortedData[Math.round((length * 10) / 100) - 1],
+    P90: sortedData[Math.round((length * 90) / 100) - 1]
+};
 ```
 
 ### Cálculo de la Media
 
 La media (promedio) se calcula sumando el producto de cada valor por su frecuencia y dividiéndolo por el número total de
 datos.
+`Σfi*xi / n` en donde fi es la frecuencia de cada valor y xi es el valor.
+`Σ(key * frequency) / length`
 
 ```typescript
-const media = Math.round((getSumMap(getKeyTimesFrequency(map)) / n) * 100) / 100;
+const media = Math.round((getSumMap(getKeyTimesFrequency(map)) / length) * 100) / 100;
 ```
 
 ### Cálculo de la Moda
@@ -113,7 +136,13 @@ console.log(moda); // {modas: [16, 20], mostFrequentNumber: 6}
 
 ### Cálculo de la Mediana
 
-La mediana es el valor que se encuentra en el centro de un conjunto de datos ordenado.
+La mediana es el valor que se encuentra en el centro de un conjunto de datos ordenado. Es el valor que se encuentra en
+la mitad de los datos ordenados.
+
+```typescript
+const pos = length / 2
+table.getByPosition(pos); 
+```
 
 ```typescript
 const mediana = sortedData[Math.round(n / 2) - 1];
@@ -122,6 +151,9 @@ const mediana = sortedData[Math.round(n / 2) - 1];
 ### Cálculo de la Varianza
 
 La varianza mide la dispersión de los datos y se calcula utilizando la fórmula:
+`(Σfi*((xi - media)^2)) / n` en donde `fi` es la frecuencia de cada valor, `xi` es el valor, `n` la cantidad de
+datos, `media`
+es la media.
 
 ```typescript
 const varianza = Math.round((getSumMap(getKeyTimesFrequency(map)) / n) * 100) / 100;
@@ -129,24 +161,21 @@ const varianza = Math.round((getSumMap(getKeyTimesFrequency(map)) / n) * 100) / 
 
 ### Cálculo de la Desviación Estándar
 
-La desviación estándar es la raíz cuadrada de la varianza.
-
-```typescript
-const desviacionEstandar = Math.sqrt(varianza);
-```
+La desviación estándar es la raíz cuadrada de la varianza.`√varianza`
 
 ### Cálculo del Coeficiente de Variación
 
 El coeficiente de variación mide la relación entre la desviación estándar y la media.
+`desviacion-estandar / media`
 
 ```typescript
-
 const data = {'coeficiente-variacion': (Math.round(((desviacionEstandar / media) * 100) * 10000) / 10000)}
 ```
 
 ### Cálculo del Sesgo
 
 El sesgo mide la asimetría en la distribución de los datos.
+`(Q3 - (2 * Q2) + Q1) / (Q3 - Q1)`
 
 ```typescript
 const sesgo = (quartiles['Q3'] - (2 * quartiles['Q2']) + quartiles['Q1']) / (quartiles['Q3'] - quartiles['Q1'])
@@ -154,7 +183,7 @@ const sesgo = (quartiles['Q3'] - (2 * quartiles['Q2']) + quartiles['Q1']) / (qua
 
 ### Cálculo de la Curtosis
 
-La curtosis mide la forma de la distribución de los datos.
+La curtosis mide la forma de la distribución de los datos. `(Q3 - Q1) / (2 * (Q3 - Q2) + (P90 - P10))`
 
 ```typescript
 const curtosis = (quartiles['Q3'] - quartiles['Q1']) / (2 * (percentiles['P90'] - percentiles['P10']))
@@ -162,14 +191,14 @@ const curtosis = (quartiles['Q3'] - quartiles['Q1']) / (2 * (percentiles['P90'] 
 
 ### Tipo de Curtosis
 
-El tipo de curtosis se clasifica en "LEPTOCURTICA" (si es mayor a 0), "PLATICURTICA" (si es menor a 0) o "MESOCURTICA" (
-si es igual a 0).
+El tipo de curtosis se clasifica en "LEPTOCÚRTICA" (si es mayor a 0), "PLATICÚRTICA" (si es menor a 0) o "MESOCÚRTICA"
+(si es igual a 0).
 
 ```typescript
 const getTipoCurtosis = (curtosis: number) => {
-    if (curtosis === 0) return 'MESOCURTICA';
-    if (curtosis > 0) return 'LEPTOCURTICA';
-    if (curtosis < 0) return 'PLATICURTICA';
+    if (curtosis === 0) return 'MESOCÚRTICA';
+    if (curtosis > 0) return 'LEPTOCÚRTICA';
+    if (curtosis < 0) return 'PLATICÚRTICA';
 }
 ```
 
@@ -200,9 +229,6 @@ const medidasDeTendenciaCentral = {
         [media - (desviacionEstandar * 3), media + (desviacionEstandar * 3)],
 }
 ```
-
-Estas fórmulas y cálculos son fundamentales para realizar análisis estadísticos en conjuntos de datos numéricos y ayudan
-a comprender diversas propiedades estadísticas de los datos.
 
 ## Uso
 
