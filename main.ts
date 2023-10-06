@@ -51,6 +51,7 @@ function main(data: number[] | Record<string, number>) {
         range,
         moda,
         media,
+        mediana,
         tuples,
         varianza,
         'desviacion-estandar': desviacionEstandar,
@@ -64,7 +65,6 @@ function main(data: number[] | Record<string, number>) {
         curtosis,
         'tipo-sesgo': sesgo > 0 ? 'POSITIVO' : 'NEGATIVO',
         'tipo-curtosis': getTipoCurtosis(curtosis),
-
     }
     console.table(state.tuples);
     console.log({max, min, range, length})
