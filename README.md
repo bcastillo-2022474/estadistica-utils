@@ -285,10 +285,10 @@ Para utilizar este código, siga estos pasos:
 3. Modifique la función `main` al final del script para proporcionar su propio conjunto de datos. Puede pasar un array
    de números o un registro con datos de frecuencia.
 
-4. Ejecute el script usando el comando `node script.js`, reemplazando `script.js` por el nombre de su archivo
-   TypeScript.
+4. Ejecute el script usando el comando `npx tsx main.ts`, tambien puede instalar primero tsx con `npm i -g tsx` y luego correr `tsx main.ts`, porfavor intente usar la ultima version de node si no le funciona.
 
 5. El script mostrará resultados estadísticos y propiedades de su conjunto de datos en la consola.
+   Actualmente hay algunos datos de ejemplo en main.ts por lo que si corre solo asi el programa deberia poder ver un ejemplo de como se vera la data
 
 Siéntase libre de personalizar y ampliar este código para adaptarlo a sus necesidades específicas de análisis
 estadístico.
